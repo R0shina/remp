@@ -1,0 +1,91 @@
+
+
+
+<?php
+require('db.inc.php');
+if (!isset($_SESSION['ROLE'])) {
+   header('location:login.php');
+   die();
+}
+?>
+
+<!doctype html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <title>Dashboard Page</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+   <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+   <link rel="stylesheet" type="text/css" href="sidebar.css" />
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+   <style>
+      body {
+         margin: 0;
+         background-color: #f9f9f9;
+      }
+
+      .content {
+         margin-left: 250px;
+         padding: 20px;
+      }
+
+     .logo-img {
+         width: 100px;
+         height: auto;
+      
+      }
+
+      .sidebar .navbar-brand:hover .logo-img {
+      pointer-events: none;
+   }
+   </style>
+</head>
+<body>
+   
+   <div class="sidebar">
+      <ul>
+       <li>
+             <a class="navbar-brand" href="dashboard.php">
+                <img class="logo-img" src="logo.png" alt="Logo">
+             </a>
+   </li>
+         <li>
+            <a href="dashboard.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+         </li>
+         <?php if ($_SESSION['ROLE'] == 1) { ?>
+            <li>
+               <a href="department.php"><i class="fas fa-building"></i>Department</a>
+            </li>
+            <li>
+               <a href="leave_type.php"><i class="fas fa-clipboard"></i>Leave Type</a>
+            </li>
+            <li>
+               <a href="employee.php"><i class="fas fa-users"></i>Employee</a>
+            </li>
+         <?php } else { ?>
+            <li>
+               <a href="add_employee.php?id=<?php echo $_SESSION['USER_ID'] ?>"><i class="fas fa-user"></i>Profile</a>
+            </li>
+         <?php } ?>
+         <li>
+            <a href="leave.php"><i class="far fa-calendar-alt"></i>Leave</a>
+         </li>
+         <li>
+            <a href="salary.php"><i class="fas fa-money-bill-wave"></i>Salary</a>
+         </li>
+      </ul>
+
+      <div class="logout-link">
+         <a href="logout.php"><i class="fas fa-power-off"></i>Logout</a>
+      </div>
+   </div>
+
+   <div class="content">
+      <!-- Your page content here -->
+   </div>
+</body>
+</html>

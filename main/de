@@ -1,0 +1,131 @@
+<?php
+require('top.inc.php');
+if ($_SESSION['ROLE'] != 1) {
+   header('location:add_employee.php?id=' . $_SESSION['USER_ID']);
+   die();
+}
+if (isset($_GET['type']) && $_GET['type'] == 'delete' && isset($_GET['id'])) {
+   $id = mysqli_real_escape_string($con, $_GET['id']);
+   mysqli_query($con, "delete from department where id='$id'");
+}
+$res = mysqli_query($con, "select * from department order by id desc");
+?>
+
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Department Page</title>
+      <link rel="stylesheet" type="text/css" href="style.css">
+      <style>
+         .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+         }
+
+         .table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 5px solid #e0e0e0;
+         }
+
+         .table th,
+         .table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid black;
+            border-right: 1px solid black;
+         }
+
+         .table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+         }
+
+         .table td:last-child {
+            border-right: none;
+         }
+
+         .table td a {
+            color: #007bff;
+            text-decoration: none;
+         }
+
+         .table td a:hover {
+            text-decoration: underline;
+         }
+
+         .navbar {
+           background-color: #f5f5f5;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between; 
+         }
+
+         .navbar h1 {
+            margin: 0;
+            padding: 0;
+            color: black;
+          
+         }
+
+         .content {
+            margin-left: 250px; /* Adjust margin to match sidebar width */
+            padding: 10px;
+         }
+      </style>
+   </head>
+   <body>
+      <?php include('top.inc.php'); ?>
+      <div class="navbar">
+         <h1>Department</h1>
+      </div>
+      <div class="content pb-0">
+         <div class="orders">
+            <div class="row">
+               <div class="col-xl-12">
+                  <div class="card">
+                     <div class="card-body">
+                        <h4 class="box_title_link"><a href="add_department.php">Add Department</a></h4>
+                     </div>
+                     <div class="card-body--">
+                        <div class="table-wrapper">
+                           <table class="table">
+                              <thead>
+                                 <tr>
+                                    <th width="10%">S.No</th>
+                                    <th width="10%">ID</th>
+                                    <th width="70%">Department Name</th>
+                                    <th width="20%"></th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <?php 
+                                 $i=1;
+                                 while($row=mysqli_fetch_assoc($res)){?>
+                                 <tr>
+                                    <td><?php echo $i?></td>
+                                    <td><?php echo $row['id']?></td>
+                                    <td><?php echo $row['department']?></td>
+                                    <td>
+                                       <a href="add_department.php?id=<?php echo $row['id']?>">Edit</a> |
+                                       <a href="department.php?id=<?php echo $row['id']?>&type=delete">Delete</a>
+                                    </td>
+                                 </tr>
+                                 <?php 
+                                 $i++;
+                                 } ?>
+                              </tbody>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </body>
+</html>
+
+<?php
+require('footer.inc.php');
+?>
