@@ -26,24 +26,27 @@ if (isset($_POST['logout'])) {
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <link rel="stylesheet" type="text/css" href="css/style.css">
+   <link rel="stylesheet" type="text/css" href="css/sidebar.css">
+
     <title>Dashboard Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <link rel="stylesheet" type="text/css" href="sidebar.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="sidebar.css" /> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <style>
-        body {
+        /* body {
             margin: 0;
             background-color: #f9f9f9;
-        }
+        } */
 
-        .content {
+        /* .content {
             margin-left: 250px;
             padding: 20px;
-        }
+        } */
 
         .logo-img {
             width: 100px;
@@ -84,7 +87,7 @@ if (isset($_POST['logout'])) {
 }
 
 .modal-button {
-    background-color: #3498db;
+    background-color: red;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -92,10 +95,10 @@ if (isset($_POST['logout'])) {
     border-radius: 5px;
     transition: background-color 0.3s;
     margin: 55px 100px;
-    font-size: 24px; /* Adjust the font size of the buttons */
+    font-size: 24px; 
 }
 .modal-button:hover {
-    background-color: #2980b9;
+    background-color: black;
 }
 
         
@@ -120,7 +123,7 @@ if (isset($_POST['logout'])) {
 }
 
 .logout-button:hover {
-    background-color: #c0392b;
+    background-color:#4a4f7d;
 }
 
 
@@ -168,6 +171,19 @@ if (isset($_POST['logout'])) {
     background-color: #2980b9;
 }
 
+.yes{
+   background-color: #929ABF;
+   height : 30px;
+   width: 70px;
+}
+
+
+.no{
+   /* background-color: #2980b9; */
+   height : 30px;
+   width: 70px;
+}
+
 
     </style>
 </head>
@@ -193,11 +209,13 @@ if (isset($_POST['logout'])) {
             <li>
                 <a href="employee.php"><i class="fas fa-users"></i>Employee</a>
             </li>
-
             <li>
-            <a href="session.php"><i class="fas fa-clock"></i>Session</a>
-        </li>
-
+                <a href="admin_project.php"><i class="fa fa-tasks"></i>Task</a>
+            </li>
+            <!-- Add the profile link for admin (role 1) -->
+            <li>
+             <a href="add_employee.php?id=<?php echo $_SESSION['USER_ID'] ?>"><i class="fas fa-user"></i>Profile</a>
+            </li>
         <?php } else { ?>
             <li>
                 <a href="add_employee.php?id=<?php echo $_SESSION['USER_ID'] ?>"><i class="fas fa-user"></i>Profile</a>
@@ -210,21 +228,25 @@ if (isset($_POST['logout'])) {
             <a href="salary.php"><i class="fas fa-money-bill-wave"></i>Salary</a>
         </li>
 
-           
-    </ul>
+             <li>
+            <a href="  my_assignments.php"><i class="fa fa-tasks"></i>My Task</a>
+        </li>
 
+        <!-- my_assignments.php -->
+    </ul>
 
     <div class="logout-link">
         <button class="logout-button" onclick="openModal()"><i class="fas fa-power-off"></i>Logout</button>
     </div>
 </div>
 
+
 <div id="myModal" class="modal">
     <div class="modal-content">
         <p>Are you sure you want to logout?</p>
         <div class="modal-buttons">
-            <button onclick="closeModal(true)">Yes</button>
-            <button onclick="closeModal(false)">No</button>
+           <button class ="yes" onclick="closeModal(true)">Yes</button>
+                <button class="no" onclick="closeModal(false)">No</button>
         </div>
     </div>
 </div>
@@ -240,10 +262,10 @@ if (isset($message)) {
     echo "<p>$message</p>";
 }
 ?>
-
+<!-- 
 <div class="content">
-    <!-- Your dashboard content here -->
-</div>
+  jedjkbbjkfbhjsfbjk
+</div> -->
 
 
 <script>

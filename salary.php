@@ -23,18 +23,19 @@ function getTotalWorkingDaysInMonth($firstDayOfMonth, $lastDayOfMonth, $publicHo
     return $totalWorkingDays;
 }
 
-$firstDayOfMonth = date('Y-m-01'); // Get the 1st day of the current month
-$lastDayOfMonth = date('Y-m-t');   // Get the last day of the current month
+$firstDayOfMonth = date('Y-m-01'); 
+$lastDayOfMonth = date('Y-m-t');  
 
 // Define $publicHolidays array
 $publicHolidays = array(
-    '2023-01-01', // New Year's Day
-    '2023-07-04', // Independence Day
-    // Add more public holidays as needed
+    '2023-01-01', 
+    '2023-07-04', 
+    '2023-12-25',
+    '2024-01-01',
 );
 
-
-
+// Additional public holidays if needed
+// $publicHolidays = array_merge($publicHolidays, array('YYYY-MM-DD', 'YYYY-MM-DD'));
 
 if ($_SESSION['ROLE'] == 1) {
     if (isset($_POST['submit'])) {
@@ -43,9 +44,9 @@ if ($_SESSION['ROLE'] == 1) {
         $salary = $_POST['salary'];
 
         // Check if it's the end of the month (from 28th to the last day)
-        $currentDay = date('j'); // Get the current day of the month
-        if ($currentDay >= 28) {
-            // Check if salary for this month has already been calculated
+        $currentDay = date('j'); 
+        if ($currentDay >= 3) {
+           
             $existingSql = "SELECT COUNT(*) as count FROM salary 
                             WHERE employee_id='$employeeId' 
                             AND (salary_month BETWEEN '$firstDayOfMonth' AND '$lastDayOfMonth')";
@@ -54,26 +55,38 @@ if ($_SESSION['ROLE'] == 1) {
             $count = $existingRow['count'];
 
             if ($count == 0) {
-                // Step 3: Retrieve leave history for the specified date range
+                
                 $sqlLeave = "SELECT * FROM `leave` WHERE employee_id='$employeeId' AND leave_from BETWEEN '$firstDayOfMonth' AND '$lastDayOfMonth'";
                 $resLeave = mysqli_query($con, $sqlLeave);
 
                 $totalLeaveDays = 0;
+                $extraLeaveDays = 0; 
+
                 while ($row = mysqli_fetch_assoc($resLeave)) {
                     $leaveFrom = strtotime($row['leave_from']);
                     $leaveTo = strtotime($row['leave_to']);
 
-                    // Adjust leave duration to exclude weekends and public holidays
+                    
                     for ($i = $leaveFrom; $i <= $leaveTo; $i = strtotime('+1 day', $i)) {
                         $currentDateString = date('Y-m-d', $i);
 
                         if (date('N', $i) != 6 && !in_array($currentDateString, $publicHolidays)) {
                             $totalLeaveDays++;
                         }
+
+                     
+                        if ($i > strtotime($lastDayOfMonth) && !in_array($currentDateString, $publicHolidays)) {
+                           
+                            $leaveTypeId = $row['leave_type_id'];
+                            $assignedLeaveDays = getAssignedLeaveDays($employeeId, $leaveTypeId);
+                            
+                            if ($totalLeaveDays > $assignedLeaveDays) {
+                                $extraLeaveDays++;
+                            }
+                        }
                     }
                 }
 
-                // Step 4: Calculate effective working days excluding Saturdays and public holidays for the specified date range
                 $saturdayCount = 0;
                 $publicHolidayCount = 0;
                 $currentDate = strtotime($firstDayOfMonth);
@@ -81,11 +94,11 @@ if ($_SESSION['ROLE'] == 1) {
                 while ($currentDate <= strtotime($lastDayOfMonth)) {
                     $currentDateString = date('Y-m-d', $currentDate);
 
-                    if (date('N', $currentDate) == 6) { // 6 represents Saturday (ISO-8601 format)
+                    if (date('N', $currentDate) == 6) { 
                         $saturdayCount++;
                     }
 
-                    // Check if the current date is a public holiday
+                    //
                     if (in_array($currentDateString, $publicHolidays)) {
                         $publicHolidayCount++;
                     }
@@ -93,22 +106,21 @@ if ($_SESSION['ROLE'] == 1) {
                     $currentDate = strtotime('+1 day', $currentDate);
                 }
 
-                // Deduct Saturdays and public holidays from the effective working days
                 $effectiveWorkingDays = (strtotime($lastDayOfMonth) - strtotime($firstDayOfMonth)) / (60 * 60 * 24) + 1 - $saturdayCount - $publicHolidayCount;
 
-                // Step 5: Calculate the daily salary based on the provided monthly salary
+                $effectiveWorkingDays -= $totalLeaveDays;
+
+                $effectiveWorkingDays -= $extraLeaveDays;
+
                 $monthlySalary = $salary;
                 $dailySalary = $effectiveWorkingDays > 0 ? $monthlySalary / $effectiveWorkingDays : 0;
 
-                // Step 6: Calculate the total salary
                 $salaryAfterLeaveDeduction = $monthlySalary - ($totalLeaveDays * $dailySalary);
 
-                // Step 7: Save the employee details and salary calculation to the database, including the month information
                 $insertSql = "INSERT INTO salary (employee_id, employee_name, monthly_salary, daily_salary, total_working_days, total_leave_days, effective_working_days, calculated_salary, salary_month) 
                               VALUES ('$employeeId', '$employeeName', '$monthlySalary', '$dailySalary', '$effectiveWorkingDays', '$totalLeaveDays', '$effectiveWorkingDays', '$salaryAfterLeaveDeduction', '$firstDayOfMonth')";
                 mysqli_query($con, $insertSql);
 
-                // Redirect to salary details page
                 header('Location: salary_details.php');
                 exit();
             } else {
@@ -123,38 +135,42 @@ if ($_SESSION['ROLE'] == 1) {
         $salary = '';
     }
 } else {
-    // User is not an admin, redirect them to view salary page
     header('Location: view_salary.php');
     exit();
 }
+
 if (isset($_POST['submit'])) {
     if (isset($error)) {
-        echo '<div class="error">' . $error . '</div>';
+        echo '<div class="error-message">' . $error . '</div>';
     }
 }
-?>
 
+function getAssignedLeaveDays($employeeId, $leaveTypeId) {
+    // Implement the logic to fetch assigned leave days from the database based on employeeId and leaveTypeId
+    // Return the assigned leave days
+    // Example: 
+    // $assignedLeaveDays = 10; 
+    // return $assignedLeaveDays;
+}
+?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Monthly Salary Calculation</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/table.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+        .error-message {
+            color: red;
+            font-weight: bold;
+            /* Add more styles as needed */
         }
 
-        .error-message {
-    color: pink;
-    font-weight: bold;
-    /* Add more styles as needed */
-}
         .salary-container {
+            margin-top: 120px;
             max-width: 800px;
-            margin: 50px auto;
+            margin-left: 500px;
             background-color: #fff;
             padding: 20px;
             border-radius: 5px;
@@ -225,30 +241,30 @@ if (isset($_POST['submit'])) {
             font-weight: bold;
         }
 
-       .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Push "View Details" to the right */
-    width: 100%; /* Ensure header takes the full width */
-}
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Push "View Details" to the right */
+            width: 100%; /* Ensure header takes the full width */
+        }
 
-.header h2 {
-    margin: 0;
-}
+        .header h2 {
+            margin: 0;
+        }
 
-.header a {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
+        .header a {
+            background-color:
+            #929ABF ;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
 
-.header a:hover {
-    background-color: #0056b3;
-}
-
+        .header a:hover {
+            background-color: #6e79aa;
+        }
     </style>
 </head>
 <body>
@@ -271,25 +287,25 @@ if (isset($_POST['submit'])) {
         <input type="text" name="salary" id="salary" value="<?php echo $salary; ?>" required>
         <br>
         <input type="submit" name="submit" value="Calculate Salary">
-        <?php if(isset($_POST['submit']) && empty($error)) { ?>
+        <?php if (isset($_POST['submit']) && empty($error)) { ?>
             <form method="POST" action="salary_details.php" style="display: inline-block;">
                 <input type="hidden" name="employeeId" value="<?php echo $employeeId; ?>">
                 <input type="submit" name="details" value="View Salary Details">
             </form>
         <?php } ?>
     </form>
- <?php if (isset($_POST['submit'])): ?>
-    <?php if (isset($error) && $error != ''): ?>
-        <p class="error"><?php echo $error; ?></p>
-    <?php else: ?>
-        <p>Effective Working Days: <?php echo $effectiveWorkingDays; ?></p>
-        <p>Total Working Days: <?php echo getTotalWorkingDaysInMonth($firstDayOfMonth, $lastDayOfMonth, $publicHolidays); ?></p>
-        <p>Total Leave Days: <?php echo $totalLeaveDays; ?></p>
-        <p>Daily Salary: Rs.<?php echo $dailySalary; ?></p>
-        <p>Monthly Salary after Leave Deduction: Rs.<?php echo $salaryAfterLeaveDeduction; ?></p>
+    <?php if (isset($_POST['submit'])): ?>
+        <?php if (isset($error) && $error != ''): ?>
+            <p class="error-message"><?php echo $error; ?></p>
+        <?php else: ?>
+            <p>Effective Working Days: <?php echo $effectiveWorkingDays; ?></p>
+            <p>Total Working Days: <?php echo getTotalWorkingDaysInMonth($firstDayOfMonth, $lastDayOfMonth, $publicHolidays); ?></p>
+            <p>Total Leave Days: <?php echo $totalLeaveDays; ?></p>
+            <p>Extra Leave Days: <?php echo $extraLeaveDays; ?></p>
+            <p>Daily Salary: Rs.<?php echo $dailySalary; ?></p>
+            <p>Monthly Salary after Leave Deduction: Rs.<?php echo $salaryAfterLeaveDeduction; ?></p>
+        <?php endif; ?>
     <?php endif; ?>
-<?php endif; ?>
-
 </div>
 </body>
 </html>

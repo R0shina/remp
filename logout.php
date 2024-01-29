@@ -34,7 +34,7 @@ if (isset($_POST['logout'])) {
             background-color: rgba(0, 0, 0, 0.5);
         }
         .modal-content {
-            background-color: #fefefe;
+            background-color: #6e79aa;
             margin: 15% auto;
             padding: 20px;
             border: 1px solid #888;
@@ -43,7 +43,12 @@ if (isset($_POST['logout'])) {
         }
         .modal-buttons {
             margin-top: 20px;
-             background-color: #929ABF;
+             background-color: black;
+        }
+
+         .yes{
+            margin-top: 20px;
+             background-color: black;
         }
 
       
@@ -77,8 +82,8 @@ if (isset($_POST['logout'])) {
         <div class="modal-content">
             <p>Are you sure you want to logout?</p>
             <div class="modal-buttons">
-                <button onclick="closeModal(true)">Yes</button>
-                <button onclick="closeModal(false)">No</button>
+                <button class ="yes" onclick="closeModal(true)">Yes</button>
+                <button class="no" onclick="closeModal(false)">No</button>
             </div>
         </div>
     </div>
@@ -95,6 +100,6 @@ if (isset($_POST['logout'])) {
     }
     ?>
     
-    <!-- Your HTML content here -->
+  
 </body>
 </html>

@@ -5,123 +5,112 @@ if($_SESSION['ROLE']!=1){
 	header('location:add_employee.php?id='.$_SESSION['USER_ID']);
 	die();
 }
-$leave_type='';
-$id='';
-if(isset($_GET['id'])){
-	$id=mysqli_real_escape_string($con,$_GET['id']);
-	$res=mysqli_query($con,"select * from leave_type where id='$id'");
-	$row=mysqli_fetch_assoc($res);
-	$leave_type=$row['leave_type'];
+$leave_type = '';
+$max_days_per_year = '';
+$id = '';
+
+if (isset($_GET['id'])) {
+    $id = mysqli_real_escape_string($con, $_GET['id']);
+    $res = mysqli_query($con, "select * from leave_type where id='$id'");
+    $row = mysqli_fetch_assoc($res);
+    $leave_type = $row['leave_type'];
+    $max_days_per_year = $row['max_days_per_year'];
 }
-if(isset($_POST['leave_type'])){
-	$leave_type=mysqli_real_escape_string($con,$_POST['leave_type']);
-	if($id>0){
-		$sql="update leave_type set leave_type='$leave_type' where id='$id'";
-	}else{
-		$sql="insert into leave_type(leave_type) values('$leave_type')";
-	}
-	mysqli_query($con,$sql);
-	header('location:leave_type.php');
-	die();
+
+if (isset($_POST['leave_type'])) {
+    $leave_type = mysqli_real_escape_string($con, $_POST['leave_type']);
+    $max_days_per_year = mysqli_real_escape_string($con, $_POST['max_days_per_year']); // Add this line
+
+    if ($id > 0) {
+        $sql = "update leave_type set leave_type='$leave_type', max_days_per_year='$max_days_per_year' where id='$id'";
+    } else {
+        $sql = "insert into leave_type(leave_type, max_days_per_year) values('$leave_type', '$max_days_per_year')";
+    }
+
+    mysqli_query($con, $sql);
+    header('location:leave_type.php');
+    die();
 }
+
 ?>
-	  <link rel="stylesheet" type="text/css" href="style.css">
+<!-- <link rel="stylesheet" type="text/css" href="css/table.css"> -->
 
-<style>
-	.nav {
-         position: fixed;
-         top: 0;
-         left: 0;
-         right: 0;
-         left: 250px;
-         background-color: white;
-         padding: 20px;
-         padding-top: 20px;
-         display: flex;
-         align-items: center;
-         justify-content: space-between;
-      }
+   <style>
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            left: 250px;
+            background-color: white;
+            padding: 20px;
+            padding-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-      .nav h1 {
-         margin: 0;
-         padding: 0;
-         color: black;
-         font-size: 24px;
-         font-weight: bold;
-      }
+        .nav h1 {
+            margin: 0;
+            padding: 0;
+            color: black;
+            font-size: 24px;
+            font-weight: bold;
+        }
 
-      .nav input[type="date"] {
-         border: none;
-         background-color: transparent;
-         font-size: 18px;
-         font-family: Arial, sans-serif;
-         color: #333;
-         padding: 5px;
-      }
+        
+        .animated fadeIn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 20vh;
+          /* margin-top: 15px; */
+        }
 
-      .nav .current-date {
-         font-size: 18px;
-         font-weight: bold;
-      }
+        .card {
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+              margin-top: 120px;
+              /* padding-bottom : 20px; */
+        }
 
-       .content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 20vh; 
-    }
+        label.form-control-label {
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+        }
 
-       .card {
-   background-color: #f2f2f2;
-   border-radius: 5px;
-   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-   padding: 20px;
-        width: 100%; 
-        max-width: 400px;
-       
-}
-		
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
 
- label.form-control-label {
-        font-size: 24px;
-        color: #333; 
-        font-weight: bold;
-          
-  
-    }
+        .btn-info {
+            background-color: #929ABF;
+            color: #fff;
+            font-size: 18px;
+            padding: 10px;
+            border: 1px solid #6e79aa;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-    .form-control {
-        width: 100%; /* Make the input full-width */
-          /* padding-bottom:20px; */
-        padding: 10px; /* Adjust padding as needed */
-        margin-top: 15px; /* Adjust margin as needed */
-        border: 1px solid #ddd; /* Add border style */
-        border-radius: 5px; /* Add border radius for rounded corners */
-        box-sizing: border-box; /* Include padding and border in the element's total width and height */
-        /* Add any other styles you want to apply */
-    }
+        .btn-info:hover {
+            background-color: #6e79aa;
+        }
 
-     .btn-info {
-        background-color:#929ABF; /* Button background color */
-        color: #fff; /* Button text color */
-        font-size: 18px; /* Button font size */
-        padding: 10px; /* Adjust padding as needed */
-        border: 1px solid #6e79aa;/* Button border color */
-        border-radius: 5px; /* Add border radius for rounded corners */
-        cursor: pointer; /* Show pointer cursor on hover */
-        /* Add any other styles you want to apply */
-    }
-
-    .btn-info:hover {
-        background-color:#6e79aa; /* Change background color on hover */
-        /* Add any other hover styles you want to apply */
-    }
-
-    /* Adjust the styles for full-width buttons */
-    .btn-block {
-        width: 100%;
-    }
-	</style>
+        .btn-block {
+            width: 100%;
+        }
+    </style>
 	<body>
 	  <div class="nav">
       <h1>Leave Type</h1>
@@ -137,6 +126,8 @@ if(isset($_POST['leave_type'])){
 							   <div class="form-group">
 								<label for="leave_type" class=" form-control-label">Leave Type</label>
 								<input type="text" value="<?php echo $leave_type?>" name="leave_type" placeholder="Enter your leave type"   pattern="[a-zA-Z'-'\s]*" class="form-control" required></div>
+                                <label for="max_days_per_year" class="form-control-label">Max Days per Year</label>
+                                <input type="number" value="<?php echo $max_days_per_year ?>" name="max_days_per_year" placeholder="Enter maximum days per year" class="form-control" required>
 
 							   
 							   <button  type="submit" class="btn btn-lg btn-info btn-block">

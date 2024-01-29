@@ -78,7 +78,8 @@ if(isset($_POST['submit'])){
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 6vh; 
+        /* height: 6vh;  */
+           margin-top: 120px;
     }
 
          .card {
@@ -88,6 +89,7 @@ if(isset($_POST['submit'])){
    padding: 20px;
         width: 100%; 
         max-width: 800px;
+          margin-top: 90px;
        
 }
 	
@@ -98,7 +100,7 @@ if(isset($_POST['submit'])){
 
 
  .form .form-group {
-        width: 100%; /* Set the width of the form groups to 100% */
+        width: 100%;
     padding-top: 10px;
 	}
 
@@ -116,33 +118,32 @@ if(isset($_POST['submit'])){
     }
 
     .form-control {
-        width: 100%; /* Make the input full-width */
+        width: 100%; 
           /* padding-bottom:20px; */
-        padding: 10px; /* Adjust padding as needed */
-        margin-top: 15px; /* Adjust margin as needed */
-        border: 1px solid #ddd; /* Add border style */
-        border-radius: 5px; /* Add border radius for rounded corners */
-        box-sizing: border-box; /* Include padding and border in the element's total width and height */
-        /* Add any other styles you want to apply */
+        padding: 10px;
+        margin-top: 15px; 
+        border: 1px solid #ddd;
+        border-radius: 5px; 
+        box-sizing: border-box;
+      
     }
 
      .btn-info {
-        background-color:#929ABF; /* Button background color */
-        color: #fff; /* Button text color */
-        font-size: 18px; /* Button font size */
-        padding: 10px; /* Adjust padding as needed */
-        border: 1px solid #6e79aa;/* Button border color */
-        border-radius: 5px; /* Add border radius for rounded corners */
-        cursor: pointer; /* Show pointer cursor on hover */
+        background-color:#929ABF; 
+        color: #fff; 
+        font-size: 18px; 
+        padding: 10px;
+        border: 1px solid #6e79aa;
+        border-radius: 5px; 
+        cursor: pointer;
        width : 20%;
     }
 
     .btn-info:hover {
-        background-color:#6e79aa; /* Change background color on hover */
-        /* Add any other hover styles you want to apply */
+        background-color:#6e79aa; 
+     
     }
 
-    /* Adjust the styles for full-width buttons */
     .btn-block {
         width: 100%;
     }
@@ -151,10 +152,42 @@ if(isset($_POST['submit'])){
         color: red;
         font-size: 12px;
     }
+
+
+.password-input-container {
+    position: relative;
+}
+
+.eye-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.eye-icon::before {
+    content: '\1F441'; 
+    font-size: 20px;
+}
+
+
+#password[type="password"] {
+    -webkit-text-security: disc;
+}
+
+
+#password[type="text"] {
+    -webkit-text-security: none;
+}
+
 	</style>
+
+   <link rel="stylesheet" type="text/css" href="css/style.css">
+   <!-- <link rel="stylesheet" type="text/css" href="css/table.css"> -->
 <body>
 	<div class="nav">
-         <h1>Employee</h1>
+         <h1>Employee Profile</h1>
       </div>
       <div class="col-lg-12">
     			 <div class="card">
@@ -174,14 +207,20 @@ if(isset($_POST['submit'])){
 	
 						<div class ="form">
 							
-								<div class="form-group">
-									<label class=" form-control-label">Mobile</label>
-									<input type="tel" value="<?php echo $mobile?>" name="mobile" placeholder="Enter employee mobile" pattern="(\+977)?[9][7-8]\d{8}" max=10 class="form-control" oninvalid="this.setCustomValidity('Please Enter 10 digit')">
-								</div>
-								<div class="form-group">
-									<label class=" form-control-label">Password</label>
-									<input type="password"  name="password" placeholder="Enter employee password" class="form-control" required>
-								</div>
+<div class="form-group">
+    <label class="form-control-label">Mobile</label>
+    <input type="tel" value="<?php echo $mobile?>" name="mobile" placeholder="Enter employee mobile" pattern="(98|97)\d{8}" class="form-control" oninvalid="this.setCustomValidity('Please enter a valid 10-digit mobile number starting with 98 or 97')">
+</div>
+
+<div class="form-group">
+    <label class="form-control-label">Password</label>
+    <div class="password-input-container">
+        <input type="password" name="password" id="password" placeholder="Enter employee password" pattern=".{8,}" title="Password must be at least 8 characters long" class="form-control" required>
+        <span toggle="#password" class="eye-icon toggle-password"></span>
+    </div>
+    
+    <div id="age-error" class="error-message" style="display: none;">Password must be at least 8 characters long</div>
+</div>
 
 					</div>
 
@@ -210,7 +249,7 @@ if(isset($_POST['submit'])){
 								</div>
 								<div class="form-group">
 									<label class="form-control-label">Birthday</label>
-        <input type="date" value="<?php echo $birthday?>" name="birthday" id="birthday" placeholder="Enter employee birthday" max="2010-12-31" class="form-control" required oninput="validateAge()">
+        <input type="date" value="<?php echo $birthday?>" name="birthday" id="birthday" placeholder="Enter employee birthday" class="form-control" required oninput="validateAge()">
         <div id="age-error" class="error-message" style="display: none;">Employee must be above 18 years old</div>
    </div>
 					</div>
@@ -237,12 +276,11 @@ if(isset($_POST['submit'])){
         // Calculate age
         var age = currentDate.getFullYear() - selectedDate.getFullYear();
 
-        // Check if the birthday has occurred this year
         if (currentDate.getMonth() < selectedDate.getMonth() || (currentDate.getMonth() === selectedDate.getMonth() && currentDate.getDate() < selectedDate.getDate())) {
             age--;
         }
 
-        // Check if the age is less than 18
+      
         if (age < 18) {
             document.getElementById('age-error').style.display = 'block';
             birthdayInput.setCustomValidity('Employee must be above 18 years old');
@@ -251,6 +289,17 @@ if(isset($_POST['submit'])){
             birthdayInput.setCustomValidity('');
         }
     }
+
+//eye toggle
+     document.addEventListener('DOMContentLoaded', function () {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.querySelector('.eye-icon');
+
+        eyeIcon.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        });
+    });
 </script>
 </html>
 
@@ -259,4 +308,4 @@ if(isset($_POST['submit'])){
 <?php
 ob_end_flush(); 
 require('footer.inc.php');
-?>
+?>y

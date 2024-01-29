@@ -35,6 +35,8 @@ if (isset($_POST['login'])) {
 <html>
 <head>
     <title>Login Page</title>
+      <link rel="stylesheet" type="text/css" href="css/style.css">
+   <link rel="stylesheet" type="text/css" href="css/table.css">
       <style>
    
 
@@ -119,3 +121,6 @@ if (isset($_POST['login'])) {
     </div>
 </body>
 </html>
+
+
+check

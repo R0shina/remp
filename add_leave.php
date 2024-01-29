@@ -34,7 +34,7 @@ $leave_to = $daterange[3]."-".$daterange[4]."-".$daterange[5];
 <html>
   <head>
     <title>Home Page</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
+<!-- <link rel="stylesheet" type="text/css" href="css/table.css"> -->
   </head>
   <style>
 	     .nav {
@@ -61,33 +61,48 @@ $leave_to = $daterange[3]."-".$daterange[4]."-".$daterange[5];
          }
 
          .content {
-            margin-top: 30px;
+           margin-top: 120px;
             margin-left: 250px;
             padding: 10px;
             box-sizing: border-box;
+
          }
 
 
          btn-info {
-        background-color:#929ABF; /* Button background color */
-        color: #fff; /* Button text color */
-        font-size: 18px; /* Button font size */
-        padding: 10px; /* Adjust padding as needed */
-        border: 1px solid #6e79aa;/* Button border color */
-        border-radius: 5px; /* Add border radius for rounded corners */
-        cursor: pointer; /* Show pointer cursor on hover */
-        /* Add any other styles you want to apply */
+        background-color:#929ABF;
+        color: #fff; 
+        font-size: 18px;
+        padding: 10px; Adju
+        border: 1px solid #6e79aa;
+        border-radius: 5px; 
+        cursor: pointer; 
+        
     }
 
     .btn-info:hover {
-        background-color:#6e79aa; /* Change background color on hover */
-        /* Add any other hover styles you want to apply */
+        background-color:#6e79aa;
+       
     }
 
-    /* Adjust the styles for full-width buttons */
-    .btn-block {
-        width: 100%;
-    }
+  .card {
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            /* margin-top: 120px; */
+              /* padding-bottom : 20px; */
+        }
+
+       
+.custom-dropdown {
+    width: 100%;
+    height: 35px;
+   margin-bottom: 8px;
+}
+
       </style>
   <body>
 
@@ -103,18 +118,18 @@ $leave_to = $daterange[3]."-".$daterange[4]."-".$daterange[5];
                         <div class="card-body card-block">
                            <form method="post">
 						   
-								<div class="form-group">
-									<label class=" form-control-label">Leave Type</label>
-									<select name="leave_id" required class="form-control">
-										<option value="">Select Leave</option>
-										<?php
-										$res=mysqli_query($con,"select * from leave_type order by leave_type desc");
-										while($row=mysqli_fetch_assoc($res)){
-											echo "<option value=".$row['id'].">".$row['leave_type']."</option>";
-										}
-										?>
-									</select>
-								</div>
+							<div class="form-group">
+    <label class="form-control-label">Leave Type</label>
+    <select name="leave_id" required class="form-control custom-dropdown">
+        <option value="">Select Leave</option>
+        <?php
+        $res = mysqli_query($con, "select * from leave_type order by leave_type desc");
+        while ($row = mysqli_fetch_assoc($res)) {
+            echo "<option value=" . $row['id'] . ">" . $row['leave_type'] . "</option>";
+        }
+        ?>
+    </select>
+</div>
 
 								<div class="form-group">
 									<label class=" form-control-label" width="100%">Leave Date</label><br>
@@ -140,16 +155,17 @@ $leave_to = $daterange[3]."-".$daterange[4]."-".$daterange[5];
 
 
 <script>
-$(function() {
-  $('input[name="daterange"]').daterangepicker({
-	locale: {
-            format: 'YYYY-MM-DD'
-        },
-    opens: 'left'
-  }, function(start, end, label) {
-    console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-  });
-});
+  $(function() {
+        $('input[name="daterange"]').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            opens: 'left',
+            minDate: moment() // Set minimum date to the current date
+        }, function(start, end, label) {
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        });
+    });
 </script>
  </body>
 </html>

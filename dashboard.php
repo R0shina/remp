@@ -9,7 +9,8 @@ ob_end_flush();
 <html>
 <head>
    <title>Dashboard Page</title>
-   <link rel="stylesheet" type="text/css" href="style.css">
+   <link rel="stylesheet" type="text/css" href="css/style.css">
+   <!-- <link rel="stylesheet" type="text/css" href="css/table.css"> -->
    <style>
       .nav {
          position: fixed;
@@ -48,10 +49,11 @@ ob_end_flush();
       }
 
       .content {
-         margin-top: 30px;
+         margin-top: 100px;
          margin-left: 250px;
          padding: 10px;
          box-sizing: border-box;
+         
       }
       
       .thumbnail-container {
@@ -122,17 +124,15 @@ ob_end_flush();
                </div>
             </a>
 
- <a href="session.php" class="thumbnail-link">
+            <a href="admin_project.php" class="thumbnail-link">
             <div class="thumbnail">
                <div class="thumbnail-icon">
-                  <i class="fas fa-clock"></i>
+                  <i class="fa fa-tasks"></i>
                </div>
-               <div class="thumbnail-title">Session</div>
+               <div class="thumbnail-title">Task</div>
             </div>
          </a>
-
-         <?php } ?>
-
+         
          <a href="employee.php" class="thumbnail-link">
             <div class="thumbnail">
                <div class="thumbnail-icon">
@@ -141,6 +141,8 @@ ob_end_flush();
                <div class="thumbnail-title">Employee</div>
             </div>
          </a>
+         <?php } ?>
+
 
          
         
@@ -163,6 +165,24 @@ ob_end_flush();
                   <div class="thumbnail-title">Salary</div>
                </div>
             </a>
+
+             <!-- <a href="assign_project.php" class="thumbnail-link">
+            <div class="thumbnail">
+               <div class="thumbnail-icon">
+                  <i class="fas fa-clock"></i>
+               </div>
+               <div class="thumbnail-title">Role</div>
+            </div>
+         </a> -->
+
+         <a href="my_assignments.php" class="thumbnail-link">
+            <div class="thumbnail">
+               <div class="thumbnail-icon">
+                  <i class="fa fa-tasks"></i>
+               </div>
+               <div class="thumbnail-title">My Task</div>
+            </div>
+         </a>
          <?php } ?>
       </div>
    </div>

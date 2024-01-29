@@ -47,7 +47,7 @@ if ($_SESSION['ROLE'] != 1) {
     // Step 5: Calculate salary
     $salary = $effectiveWorkingDays * $dailySalary;
 } else {
-    // Admin is not allowed to view their own salary, redirect them to salary calculation page
+ 
     header('Location: salary.php');
     exit();
 }
@@ -58,7 +58,8 @@ if ($_SESSION['ROLE'] != 1) {
 <html>
   <head>
     <title>View Monthly Salary</title>
-      <link rel="stylesheet" type="text/css" href="style.css">
+   <link rel="stylesheet" type="text/css" href="css/style.css">
+   <link rel="stylesheet" type="text/css" href="css/salary.css">
 
     <style>
       /* body {
@@ -77,6 +78,7 @@ if ($_SESSION['ROLE'] != 1) {
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         padding-left :20px;
         margin-right: 45px; 
+        margin-top : 120px;
       }
 
       .salary-container h2 {
@@ -145,6 +147,7 @@ if ($_SESSION['ROLE'] != 1) {
         <th>Effective Working Days</th>
         <th>Daily Salary</th>
         <th>Monthly Salary</th>
+           <th>Total Salary</th>
 
     </tr>
     <?php
@@ -163,6 +166,7 @@ if ($_SESSION['ROLE'] != 1) {
         echo "<td>" . $historyRow['effective_working_days'] . "</td>";
         echo "<td>Rs." . $historyRow['daily_salary'] . "</td>";
         echo "<td>Rs." . $historyRow['monthly_salary'] . "</td>";
+          echo "<td>Rs." . $historyRow['calculated_salary'] . "</td>";
   
         echo "</tr>";
     }

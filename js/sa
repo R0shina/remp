@@ -23,8 +23,18 @@ function getTotalWorkingDaysInMonth($firstDayOfMonth, $lastDayOfMonth, $publicHo
     return $totalWorkingDays;
 }
 
+$firstDayOfMonth = date('Y-m-01'); // Get the 1st day of the current month
+$lastDayOfMonth = date('Y-m-t');   // Get the last day of the current month
 
-// ... (previous code)
+// Define $publicHolidays array
+$publicHolidays = array(
+    '2023-01-01', // New Year's Day
+    '2023-07-04', // Independence Day
+    // Add more public holidays as needed
+);
+
+
+
 
 if ($_SESSION['ROLE'] == 1) {
     if (isset($_POST['submit'])) {
@@ -32,9 +42,9 @@ if ($_SESSION['ROLE'] == 1) {
         $employeeName = $_POST['employeeName'];
         $salary = $_POST['salary'];
 
-     
+        // Check if it's the end of the month (from 28th to the last day)
         $currentDay = date('j'); // Get the current day of the month
-        if ($currentDay >= 2) {
+        if ($currentDay >= 28) {
             // Check if salary for this month has already been calculated
             $existingSql = "SELECT COUNT(*) as count FROM salary 
                             WHERE employee_id='$employeeId' 
@@ -105,7 +115,7 @@ if ($_SESSION['ROLE'] == 1) {
                 $error = "Salary for this month has already been calculated.";
             }
         } else {
-            $error = "Salanry calculation is allowed only at the end of the month (from 28th to the last day).";
+            $error = "Salary calculation is allowed only at the end of the month (from 28th to the last day).";
         }
     } else {
         $employeeId = '';
@@ -137,6 +147,11 @@ if (isset($_POST['submit'])) {
             padding: 0;
         }
 
+        .error-message {
+    color: pink;
+    font-weight: bold;
+    /* Add more styles as needed */
+}
         .salary-container {
             max-width: 800px;
             margin: 50px auto;
@@ -169,13 +184,13 @@ if (isset($_POST['submit'])) {
         }
 
         .salary-container input[type="submit"] {
-            background-color: #4caf50;
+            background-color: #929ABF;
             color: #fff;
             cursor: pointer;
         }
 
         .salary-container input[type="submit"]:hover {
-            background-color: #45a049;
+            background-color: #6e79aa;
         }
 
         .salary-container p {
@@ -263,17 +278,18 @@ if (isset($_POST['submit'])) {
             </form>
         <?php } ?>
     </form>
- <?php if(isset($_POST['submit'])) { ?>
-            <?php if(isset($error) && $error != '') { ?>
-                <p class="error"><?php echo $error; ?></p>
-            <?php } else { ?>
-                <p>Effective Working Days: <?php echo $effectiveWorkingDays; ?></p>
-                <p>Total Working Days: <?php echo getTotalWorkingDaysInMonth($firstDayOfMonth, $lastDayOfMonth, $publicHolidays); ?></p>
-                <p>Total Leave Days: <?php echo $totalLeaveDays; ?></p>
-                <p>Daily Salary: Rs.<?php echo $dailySalary; ?></p>
-                <p>Monthly Salary after Leave Deduction: Rs.<?php echo $salaryAfterLeaveDeduction; ?></p>
-            <?php } ?>
-        <?php } ?>
+ <?php if (isset($_POST['submit'])): ?>
+    <?php if (isset($error) && $error != ''): ?>
+        <p class="error"><?php echo $error; ?></p>
+    <?php else: ?>
+        <p>Effective Working Days: <?php echo $effectiveWorkingDays; ?></p>
+        <p>Total Working Days: <?php echo getTotalWorkingDaysInMonth($firstDayOfMonth, $lastDayOfMonth, $publicHolidays); ?></p>
+        <p>Total Leave Days: <?php echo $totalLeaveDays; ?></p>
+        <p>Daily Salary: Rs.<?php echo $dailySalary; ?></p>
+        <p>Monthly Salary after Leave Deduction: Rs.<?php echo $salaryAfterLeaveDeduction; ?></p>
+    <?php endif; ?>
+<?php endif; ?>
+
 </div>
 </body>
 </html>
